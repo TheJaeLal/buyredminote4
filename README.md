@@ -3,4 +3,4 @@ An automated flipkart checkout script (in Python) to buy Redmi Note 4
 
 Dependencies:
 
-Selenium Webdriver (Python) and Firefox Gecko Driver
+Selenium Webdriver (Python)
