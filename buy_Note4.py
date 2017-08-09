@@ -11,7 +11,41 @@ export PATH=$PATH:/path/to/directory/of/executable/downloaded/in/previous/step
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.common.exceptions import NoSuchElementException
-import time
+import time,sys
+
+#Take email and password from command line
+email = sys.argv[1]
+password = sys.argv[2]
+
+def Out_of_Stock(driver,out_of_stock_selector):
+	try:
+		driver.find_element_by_css_selector(out_of_stock_selector)
+	except NoSuchElementException:
+		return False
+
+	SCROLL_PAUSE_TIME = 1
+
+	# Wait to load page Before Scrolling
+	time.sleep(SCROLL_PAUSE_TIME)
+
+	#Scroll down to Bottom
+	driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+	# Wait to load page
+	time.sleep(SCROLL_PAUSE_TIME)
+
+	#Scroll up
+	driver.execute_script("window.scrollTo(0, 0);")
+
+	print('Out of Stock!')
+
+	return True
+
+def checkout(driver,buy_now_selector,email,password):
+	print('Your credentials are as follows :')
+	print('email:{} password:{}'.format(email,password))
+	buy_button = driver.find_element_by_css_selector(buy_now_selector)
+	buy_button.click()
 
 def main():
 
@@ -36,42 +70,26 @@ def main():
 	div._3S6yHr._2S3f06 > div._1k1QCg._3QNwd7 > \
 	ul > li:nth-child(2) > form > button'
 
-	# enter_email_selector = '._2zrpKA'
-	# enter_password_selector = 'div._39M2dM:nth-child(2) > input:nth-child(1)'
+	enter_email_selector = '._2zrpKA'
+	enter_password_selector = 'div._39M2dM:nth-child(2) > input:nth-child(1)'
+
 	driver.get(note_4_2GB_url)
 
-	while True: 
-		try:
-			driver.find_element_by_css_selector(out_of_stock_selector)
-		except NoSuchElementException:
-			break
+	while Out_of_Stock(driver,note_4_2GB_url,out_of_stock_selector): 
 
-		SCROLL_PAUSE_TIME = 1
 		REFRESH_PAUSE_TIME = 2
 
-		# Wait to load page
-		time.sleep(SCROLL_PAUSE_TIME)
+		# Wait before Refresh
+		time.sleep(REFRESH_PAUSE_TIME)
 
-		#Scroll to the bottom
-		driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+		# Refresh the web page
+		driver.refresh()
 
-		# Wait to load page
-		time.sleep(SCROLL_PAUSE_TIME)
+	print('********Congrats In Stock!!*********')
+	checkout(driver,buy_now_selector,email,password)
 
-		#Scroll up
-		driver.execute_script("window.scrollTo(0, 0);")
 
-		print('Out of Stock!')
-
-	# Wait before Refresh
-	time.sleep(REFRESH_PAUSE_TIME)
-
-	# Refresh the web page
-	driver.refresh()
-
-	print('In Stock!!')
-	# buy_button = driver.find_element_by_css_selector(buy_now_selector)
-	# buy_button.click()
+#***********Main Ends***********
 
 if __name__== "__main__":
 	main()
