@@ -11,11 +11,17 @@ export PATH=$PATH:/path/to/directory/of/executable/downloaded/in/previous/step
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.common.exceptions import NoSuchElementException
-import time,sys
+import time,sys,os
 
 #Take email and password from command line
 email = sys.argv[1]
 password = sys.argv[2]
+
+def Set_Path_For_Firefox():
+	pwd = os.environ['PWD']
+	path_to_gecko = pwd
+	new_path = os.environ['PATH']+':'+path_to_gecko
+	os.environ['PATH'] = new_path
 
 def Out_of_Stock(driver,out_of_stock_selector):
 	try:
@@ -49,6 +55,9 @@ def checkout(driver,buy_now_selector,email,password):
 
 def main():
 
+	#Set the path to locate Gecko Driver for firefox..
+	Set_Path_For_Firefox()
+
 	driver = webdriver.Firefox()
 
 	note_4_2GB_url = 'https://www.flipkart.com/\
@@ -75,7 +84,7 @@ def main():
 
 	driver.get(note_4_2GB_url)
 
-	while Out_of_Stock(driver,note_4_2GB_url,out_of_stock_selector): 
+	while Out_of_Stock(driver,out_of_stock_selector): 
 
 		REFRESH_PAUSE_TIME = 2
 
