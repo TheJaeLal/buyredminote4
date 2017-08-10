@@ -61,11 +61,32 @@ def Out_of_Stock(driver,out_of_stock_selector):
 
 	return True
 
-def checkout(driver,buy_now_selector,email,password):
+def checkout(driver,buy_now_selector,email,password,enter_email_selector,enter_password_selector):
 	print('Your credentials are as follows :')
 	print('email:{} password:{}'.format(email,password))
-	buy_button = driver.find_element_by_css_selector(buy_now_selector)
+
+	#buy_button = driver.find_element_by_css_selector(buy_now_selector)
+
+
+	buy_button = driver.find_element_by_xpath("//button[contains(text(),'BUY NOW')]")
+	
 	buy_button.click()
+
+
+	#Wait for 2 seconds and allow the page to load..
+	time.sleep(2)
+	
+	try:
+		email_box = driver.find_element_by_css_selector(enter_email_selector)
+		email_box.send_keys(email)
+		
+		#Wait for 1 second to let password_box appear
+		time.sleep(1)
+		password_box = driver.find_element_by_css_selector(enter_password_selector)
+
+		password_box.send_keys(password)
+	except NoSuchElementException:
+		print('Unable to locate email or password field')	
 
 def main():
 
@@ -93,10 +114,11 @@ def main():
 	div._3S6yHr._2S3f06 > div._1k1QCg._3QNwd7 > \
 	ul > li:nth-child(2) > form > button'
 
+
 	enter_email_selector = '._2zrpKA'
 	enter_password_selector = 'div._39M2dM:nth-child(2) > input:nth-child(1)'
 
-	driver.get(note_4_2GB_url)
+	driver.get(note_4_3GB_url)
 
 	while Out_of_Stock(driver,out_of_stock_selector): 
 
@@ -109,7 +131,7 @@ def main():
 		driver.refresh()
 
 	print('********Congrats In Stock!!*********')
-	checkout(driver,buy_now_selector,email,password)
+	checkout(driver,buy_now_selector,email,password,enter_email_selector,enter_password_selector)
 
 
 #***********Main Ends***********
